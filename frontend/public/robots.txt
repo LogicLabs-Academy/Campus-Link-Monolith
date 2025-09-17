@@ -1,0 +1,6 @@
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Sitemap for crawlers
+Sitemap: https://campuslink.app/sitemap.xml
