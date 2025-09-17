@@ -65,3 +65,8 @@ cd frontend
 npm install
 npm run dev
 ```
+
+###Docker
+```bash
+docker-compose up -d
+```
