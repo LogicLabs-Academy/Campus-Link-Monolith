@@ -21,7 +21,7 @@ export default function RegisterPage() {
       navigate("/login");
     } catch (err) {
       setError("Registration failed");
-      console.error("REGISTER ERROR:", err.message);
+      console.error("REGISTER ERROR:", err.response?.data || err.message);
     }
   };
 

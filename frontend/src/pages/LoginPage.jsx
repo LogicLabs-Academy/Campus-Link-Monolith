@@ -10,21 +10,24 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", {
+      const res = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
       });
+
       localStorage.setItem("accessToken", res.data.token);
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
       }
       navigate("/dashboard");
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.response?.data?.error || "Login failed");
+      console.error("LOGIN ERROR:", err.response?.data || err.message);
     }
   };
 

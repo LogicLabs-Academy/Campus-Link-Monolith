@@ -10,26 +10,59 @@ const makeAccessToken = (user) =>
     expiresIn: process.env.JWT_EXPIRES_IN || "1h",
   });
 
-// --------- REGISTER ----------
+// // --------- REGISTER ----------
+// router.post("/register", async (req, res) => {
+//   console.log("➡️  /api/auth/register called");
+//   console.log("   body:", req.body);
+
+//   const { email, password } = req.body;
+//   if (!email || !password) {
+//     console.log("   ❌ missing fields");
+//     return res.status(400).json({ error: "Email and password required" });
+//   }
+
+//   try {
+//     // check existing
+//     const check = await pool.query("SELECT id FROM users WHERE email = $1", [
+//       email,
+//     ]);
+//     console.log("   check.rowsCount:", check.rowCount);
+
+//     if (check.rowCount > 0) {
+//       console.log("   ❌ email already exists");
+//       return res.status(400).json({ error: "Email already exists" });
+//     }
+
+//     const hashed = await bcrypt.hash(password, 10);
+//     const insert = await pool.query(
+//       "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
+//       [email, hashed]
+//     );
+//     console.log("   ✅ inserted user id:", insert.rows[0].id);
+
+//     const token = makeAccessToken(insert.rows[0]);
+//     console.log("   ✅ issuing token");
+
+//     return res.status(201).json({ token, user: insert.rows[0] });
+//   } catch (err) {
+//     console.error("   ❌ REGISTER ERROR:", err?.message || err);
+//     return res.status(500).json({ error: "Registration failed" });
+//   }
+// });
 router.post("/register", async (req, res) => {
   console.log("➡️  /api/auth/register called");
   console.log("   body:", req.body);
-
+  console.log(req.body);
   const { email, password } = req.body;
   if (!email || !password) {
-    console.log("   ❌ missing fields");
     return res.status(400).json({ error: "Email and password required" });
   }
 
   try {
-    // check existing
     const check = await pool.query("SELECT id FROM users WHERE email = $1", [
       email,
     ]);
-    console.log("   check.rowsCount:", check.rowCount);
-
     if (check.rowCount > 0) {
-      console.log("   ❌ email already exists");
       return res.status(400).json({ error: "Email already exists" });
     }
 
@@ -38,14 +71,11 @@ router.post("/register", async (req, res) => {
       "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
       [email, hashed]
     );
-    console.log("   ✅ inserted user id:", insert.rows[0].id);
 
     const token = makeAccessToken(insert.rows[0]);
-    console.log("   ✅ issuing token");
-
     return res.status(201).json({ token, user: insert.rows[0] });
   } catch (err) {
-    console.error("   ❌ REGISTER ERROR:", err?.message || err);
+    console.error("REGISTER ERROR:", err.message || err);
     return res.status(500).json({ error: "Registration failed" });
   }
 });
