@@ -3,49 +3,44 @@ import dotenv from "dotenv";
 import cors from "cors";
 import pool from "./db.js";
 import authRoutes from "./routes/auth.js";
-import authMiddleware from "./middleware/authMiddleware.js";
 
 dotenv.config();
+
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// basic request logger
+// Log every request
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+  console.log(`➡️  ${req.method} ${req.originalUrl}`);
   next();
 });
 
-// health
+// Health check route
 app.get("/api/health", async (req, res) => {
+  console.log("➡️  GET /api/health called");
   try {
     const now = await pool.query("SELECT NOW()");
+    console.log("   ✅ Database connected, time:", now.rows[0].now);
     res.json({ status: "ok", db_time: now.rows[0].now });
   } catch (err) {
-    console.error("DB health check error:", err.message);
+    console.error("   ❌ DB health check error:", err.message);
     res
       .status(500)
       .json({ status: "error", message: "Database not connected" });
   }
 });
 
-// mount auth routes under /api/auth
+// Mount auth routes
+console.log("🔗 Mounting /api/auth routes...");
 app.use("/api/auth", authRoutes);
 
-app.get("/me", authMiddleware, async (req, res) => {
-  try {
-    const { id } = req.user; // comes from JWT payload
-    const result = await pool.query(
-      "SELECT id, email FROM users WHERE id = $1",
-      [id]
-    );
-    if (result.rowCount === 0) return res.sendStatus(404);
-    res.json({ user: result.rows[0] });
-  } catch (err) {
-    console.error("❌ /me error:", err);
-    res.sendStatus(500);
-  }
-});
-
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`✅ Backend running on ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅ Backend running on port ${PORT}`);
+  console.log(`➡️  Try GET http://localhost:${PORT}/api/health`);
+  console.log(`➡️  Try POST http://localhost:${PORT}/api/auth/register`);
+  console.log(`➡️  Try POST http://localhost:${PORT}/api/auth/login`);
+});

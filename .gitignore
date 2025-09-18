@@ -11,3 +11,4 @@ frontend/.env
 # Root
 .DS_Store
 .env
+docker-compose.yml

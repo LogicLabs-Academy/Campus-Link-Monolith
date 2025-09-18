@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api"; // ✅ use axios instance we made
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -8,7 +8,6 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -17,11 +16,22 @@ export default function RegisterPage() {
       return;
     }
     try {
-      await axios.post(`${API_URL}/auth/register`, { email, password });
+      console.log("➡️ Sending register request:", { email, password });
+      const res = await api.post("/auth/register", { email, password }); // ✅ use api instance
+
+      console.log("✅ Register success:", res.data);
+
+      if (res.data.token) {
+        localStorage.setItem("accessToken", res.data.token);
+      }
+      if (res.data.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
+
       navigate("/login");
     } catch (err) {
-      setError("Registration failed");
-      console.error("REGISTER ERROR:", err.response?.data || err.message);
+      console.error("❌ REGISTER ERROR:", err.response?.data || err.message);
+      setError(err.response?.data?.error || "Registration failed");
     }
   };
 

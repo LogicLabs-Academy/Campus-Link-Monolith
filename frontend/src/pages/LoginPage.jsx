@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import logo from "/icons/icon-192x192.png"; // adjust if path differs
-import bg from "/icons/icon-512x512.png"; // or another background image
+import api from "../../api"; // ✅ axios instance, not string
+import logo from "/icons/icon-192x192.png";
+import bg from "/icons/icon-512x512.png";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,24 +10,31 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, {
-        email,
-        password,
-      });
+      console.log("➡️ Sending login request:", { email, password });
 
-      localStorage.setItem("accessToken", res.data.token);
+      const res = await api.post("/auth/login", { email, password });
+
+      console.log("✅ Login success:", res.data);
+
+      if (res.data.token) {
+        localStorage.setItem("accessToken", res.data.token);
+      }
+      if (res.data.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
+
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
       }
+
       navigate("/dashboard");
     } catch (err) {
+      console.error("❌ LOGIN ERROR:", err.response?.data || err.message);
       setError(err.response?.data?.error || "Login failed");
-      console.error("LOGIN ERROR:", err.response?.data || err.message);
     }
   };
 
