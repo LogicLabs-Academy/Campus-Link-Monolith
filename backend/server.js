@@ -6,18 +6,21 @@ import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
-const app = express();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: ".env.local" });
+} else {
+  dotenv.config({ path: ".env.production" });
+}
 
+const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
 // Log every request
 app.use((req, res, next) => {
   console.log(`➡️  ${req.method} ${req.originalUrl}`);
   next();
 });
-
 // Health check route
 app.get("/api/health", async (req, res) => {
   console.log("➡️  GET /api/health called");
@@ -43,4 +46,5 @@ app.listen(PORT, () => {
   console.log(`➡️  Try GET http://localhost:${PORT}/api/health`);
   console.log(`➡️  Try POST http://localhost:${PORT}/api/auth/register`);
   console.log(`➡️  Try POST http://localhost:${PORT}/api/auth/login`);
+  console.log("Connected to DB:", process.env.DATABASE_URL);
 });

@@ -2,6 +2,8 @@
 backend/node_modules/
 backend/.env
 backend/logs/
+backend/.env.local
+backend/.env.production
 
 # Frontend
 frontend/node_modules/
