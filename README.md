@@ -72,3 +72,13 @@ npm run dev
 ```bash
 docker-compose up -d
 ```
+
+# Campus Link School App (Archived Monolith)
+
+This repo contains the original combined project (frontend + backend in one repo).
+It has been **archived** and split into separate repositories for easier collaboration:
+
+- 👉 [Frontend Repo](https://github.com/LogicLabs-Academy/Campus-Link-frontend) 
+- 👉 [Backend Repo](https://github.com/LogicLabs-Academy/Campus-Link-backend) 
+
+Please use the split repos for active development. This repo exists only as reference.
