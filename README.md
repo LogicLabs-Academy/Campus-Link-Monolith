@@ -3,7 +3,10 @@
 This repository represents the **first phase of the Campus Link School App project**, which I started as a solo developer.  
 It contains my initial experiments, learning process, and early development work.
 
----
+➡️ The project has now moved to an **organization repo** where I collaborate with other developers and students:  
+[Go to the LogicLabs Academy](https://github.com/LogicLabs-Academy)
+
+## This repo remains public as a record of my learning journey.
 
 ## Why This Repo Exists
 
